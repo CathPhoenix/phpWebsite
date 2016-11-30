@@ -1,0 +1,50 @@
+body{
+
+    font-family: "Arial Black", Gadget, sans-serif;
+    color: #0e0aff;
+
+}
+.wrap{
+    width: 80%;
+    margin: auto;
+}
+
+header{
+    width: 100%;
+    margin: auto;
+}
+
+.formLabel{
+    width: 400px;
+    color: #0baf30;
+    display:inline-block;
+    text-align: right;
+
+}
+table, td, th {
+    border: 1px solid black;
+    padding: 5px;
+}
+table th{
+    color: #bc0373;
+    font-family: Broadway, "Bell MT", sans-serif;
+    font-size: large;
+    height: 70px;
+}
+
+table td{
+    height: 40px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 80%;
+    text-align: center;
+    margin: auto;
+}
+
+dt, h3{
+    color: #bc0373;
+    font-family: Broadway, "Bell MT", sans-serif;
+    font-size: large;
+}

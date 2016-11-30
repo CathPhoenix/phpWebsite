@@ -1,0 +1,32 @@
+footer{
+    position: relative;
+    padding: 15px;
+    background-color: #9eefd7;
+    text-align: center;
+    margin-top: 100px;
+}
+
+footer ul{
+    list-style-type: none;
+}
+
+footer ul li{
+    font-size: 12px;
+    display: inline;
+    padding: 10px 35px;
+}
+
+footer ul li a{
+    text-decoration: none;
+    color: #3366ff; /*Blue*/
+}
+
+footer p{
+    color: #e84de8;
+    font-size: 12px;
+}
+
+footer p a{
+    color: #e84de8;
+    font-size: 12px;
+}

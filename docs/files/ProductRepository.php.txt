@@ -1,0 +1,176 @@
+<?php
+/**
+ * the methods for products
+ */
+namespace Itb;
+
+/**
+ * methods for products
+ * Class ProductRepository
+ * @package Itb
+ */
+class ProductRepository
+{
+    /**
+     * connection to the database
+     * @var null|\PDO
+     */
+    private $connection = null;
+
+    /**
+     * to set connection to connection to database
+     * ProductRepository constructor.
+     */
+    public function __construct()
+    {
+        $this->connection = $this->connectToDb();
+    }
+
+    /**
+     * to connect to the database
+     * @return null|\PDO
+     */
+    public function connectToDb()
+    {
+        // DSN - the Data Source Name - required by the PDO to connect
+        $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME;
+
+        // attempt to create a connection to the database
+        try {
+            $connection = new \PDO($dsn, DB_USER, DB_PASS);
+        } catch (\PDOException $e) {
+            // deal with connection error
+            return null;
+        }
+
+        return $connection;
+    }
+
+    /**
+     * get all product info from database with a certain id
+     * @param $id
+     * @return mixed|null
+     */
+    public function getOneById($id)
+    {
+        $sql = 'SELECT * FROM product WHERE productId=:id';
+        $statement = $this->connection->prepare($sql);
+        $statement->bindParam(':id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if ($row = $statement->fetch()) {
+            return $row;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * delete a product with a certain id
+     * @param $id
+     * @return bool
+     */
+    public function deleteProduct($id)
+    {
+        $sql = 'DELETE FROM product WHERE productId=:id';
+        $statement = $this->connection->prepare($sql);
+        $statement->bindParam(':id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $numRowsAffected = $statement->rowCount();
+
+        if($numRowsAffected > 0){
+            $queryWasSuccessful = true;
+        } else {
+            $queryWasSuccessful = false;
+        }
+
+        return $queryWasSuccessful;
+    }
+
+    /**
+     * create a new product and save to database
+     * @param Product $product
+     * @return bool
+     */
+    public function createNewProduct(Product $product)
+    {
+        $productName = $product->getProductName();
+        $description = $product->getDescription();
+        $price = $product->getPrice();
+        $rating = $product->getRating();
+
+        //INSERT INTO table (name, value) VALUES (:name, :value)
+        $sql = 'INSERT into product (productName, description, price, rating) VALUES (:productName, :description, :price, :rating)';
+
+        $statement = $this->connection->prepare($sql);
+        $statement->bindParam(':productName', $productName, \PDO::PARAM_STR);
+        $statement->bindParam(':description', $description, \PDO::PARAM_STR); // there isn't a PARAM_FLOAT ...
+        $statement->bindParam(':price', $price, \PDO::PARAM_STR);
+        $statement->bindParam(':rating', $rating, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $numRowsAffected = $statement->rowCount();
+
+        if($numRowsAffected > 0){
+            $queryWasSuccessful = true;
+        } else {
+            $queryWasSuccessful = false;
+        }
+        return $queryWasSuccessful;
+    }
+
+    /**
+     * update a product and save to database
+     * @param Product $product
+     * @return bool
+     */
+    public function updateProduct(Product $product)
+    {
+        $productId = $product->getProductId();
+        $productName = $product->getProductName();
+        $description = $product->getDescription();
+        $price = $product->getPrice();
+        $rating = $product->getRating();
+
+        $sql = 'UPDATE product SET productName=:productName, description=:description, price=:price, rating=:rating WHERE productId=:id';
+
+        $statement = $this->connection->prepare($sql);
+        $statement->bindParam(':id', $productId, \PDO::PARAM_INT);
+        $statement->bindParam(':productName', $productName, \PDO::PARAM_STR);
+        $statement->bindParam(':description', $description, \PDO::PARAM_STR);
+        $statement->bindParam(':price', $price, \PDO::PARAM_STR);
+        $statement->bindParam(':rating', $rating, \PDO::PARAM_INT);
+
+        $statement->execute();
+
+        $numRowsAffected = $statement->rowCount();
+
+        if($numRowsAffected > 0){
+            $queryWasSuccessful = true;
+        } else {
+            $queryWasSuccessful = false;
+        }
+
+        return $queryWasSuccessful;
+    }
+
+    /**
+     * returns all products from the data base
+     * @return array
+     */
+    public function getAllProducts()
+    {
+        // run SQL
+        $sql = 'SELECT * FROM product';
+
+        $statement = $this->connection->prepare($sql);
+        $statement->setFetchMode(\PDO::FETCH_CLASS, '\\Itb\\Product');
+        $statement->execute();
+
+        $products = $statement->fetchAll(); // array of Product objects
+
+        return $products;
+    }
+
+}
